@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Simulador de TESTS</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Simulador de TESTS</h1>
+
+      <div class="selector-asignaturas">
+        <div class="asignatura" data-file="Asignaturas/preguntasEntornos.js">
+          Entornos de Desarrollo
+        </div>
+        <div class="asignatura" data-file="Asignaturas/preguntasSistemas.js">
+          Sistemas Informáticos
+        </div>
+        <div class="asignatura" data-file="Asignaturas/preguntasBBDD.js">
+          Bases de Datos
+        </div>
+      </div>
+
+      <!-- Mensaje de asignatura cargada -->
+      <div id="mensajeAsignatura" class="mensaje-asignatura"></div>
+
+      <div id="menu" class="menu">
+        <div class="card" onclick="startSimulacro()">
+          Simulacro cerrado (40 preguntas)
+        </div>
+        <div class="card" onclick="startInfinito()">
+          Modo infinito aleatorio
+        </div>
+        <div class="card" onclick="startFalladas()">
+          Solo preguntas falladas
+        </div>
+      </div>
+
+      <div id="quiz" class="quiz">
+        <div class="progress" id="progress"></div>
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next" id="nextBtn">Siguiente</button>
+        <div class="back" onclick="volverMenu()">← Volver al menú</div>
+      </div>
+    </div>
+
+    <!-- ========================= -->
+    <!--   SCRIPT PRINCIPAL TEST   -->
+    <!-- ========================= -->
+    <script>
+      let questions = [],
+        current = 0,
+        score = 0,
+        puntos = 0,
+        falladas = JSON.parse(localStorage.getItem("falladas") || "[]");
+
+      const menu = document.getElementById("menu");
+      const quiz = document.getElementById("quiz");
+      const qEl = document.getElementById("question");
+      const optEl = document.getElementById("options");
+      const fbEl = document.getElementById("feedback");
+      const progEl = document.getElementById("progress");
+      const nextBtn = document.getElementById("nextBtn");
+
+      function shuffle(a) {
+        return a.sort(() => Math.random() - 0.5);
+      }
+
+      function startSimulacro() {
+        questions = shuffle([...allQuestions]).slice(0, 40);
+        startQuiz();
+      }
+
+      function startInfinito() {
+        questions = shuffle([...allQuestions]);
+        startQuiz(true);
+      }
+
+      function startFalladas() {
+        questions = shuffle(allQuestions.filter((q) => falladas.includes(q.q)));
+        startQuiz();
+      }
+
+      function startQuiz(infinite = false) {
+        menu.style.display = "none";
+        quiz.style.display = "block";
+        current = 0;
+        score = 0;
+        loadQuestion(infinite);
+      }
+
+      function loadQuestion(infinite) {
+        if (current >= questions.length) {
+          if (infinite) {
+            current = 0;
+            shuffle(questions);
+          } else return showResult();
+        }
+
+        const q = questions[current];
+        progEl.textContent = `Pregunta ${current + 1} / ${questions.length}`;
+        qEl.textContent = q.q;
+        optEl.innerHTML = "";
+        fbEl.style.display = "none";
+        nextBtn.style.display = "none";
+
+        q.options.forEach((o, i) => {
+          const b = document.createElement("button");
+          b.textContent = o;
+          b.onclick = () => answer(b, i);
+          optEl.appendChild(b);
+        });
+      }
+
+      function answer(btn, i) {
+        const q = questions[current];
+        const btns = optEl.querySelectorAll("button");
+        btns.forEach((b) => (b.disabled = true));
+
+        if (i === q.correct) {
+          btn.classList.add("correct");
+          fbEl.className = "feedback correct";
+          fbEl.innerHTML = "✔ Correcto<br><small>" + q.explanation + "</small>";
+          score++;
+          puntos += 0.25;
+        } else {
+          btn.classList.add("incorrect");
+          btns[q.correct].classList.add("correct");
+          fbEl.className = "feedback incorrect";
+          fbEl.innerHTML =
+            "✘ Incorrecto<br><small>" + q.explanation + "</small>";
+          puntos -= 0.08;
+          if (!falladas.includes(q.q)) falladas.push(q.q);
+        }
+
+        localStorage.setItem("falladas", JSON.stringify(falladas));
+        fbEl.style.display = "block";
+        nextBtn.style.display = "block";
+      }
+
+      nextBtn.onclick = () => {
+        current++;
+        loadQuestion();
+      };
+
+      function showResult() {
+        quiz.innerHTML = `<h2>Resultado</h2>
+          <p>Aciertos: ${score}</p>
+          <p>Puntuación: ${puntos.toFixed(2)} / 10</p>
+          <div class='back' onclick='location.reload()'>Volver al menú</div>`;
+      }
+
+      function volverMenu() {
+        location.reload();
+      }
+    </script>
+
+    <!-- ========================= -->
+    <!--   SCRIPT CARGA DINÁMICA   -->
+    <!-- ========================= -->
+    <script>
+      const botones = document.querySelectorAll(".asignatura");
+      const mensajeAsignatura = document.getElementById("mensajeAsignatura");
+
+      // Ocultar menú y quiz al inicio
+      menu.style.display = "none";
+      quiz.style.display = "none";
+
+      botones.forEach((boton) => {
+        boton.addEventListener("click", () => {
+          botones.forEach((b) => b.classList.remove("activa"));
+          boton.classList.add("activa");
+
+          const archivo = boton.dataset.file;
+
+          // Reset total
+          window.allQuestions = [];
+
+          // Eliminar script previo
+          const prev = document.getElementById("scriptPreguntas");
+          if (prev) prev.remove();
+
+          // Cargar nuevo archivo SIN caché
+          const script = document.createElement("script");
+          script.src = archivo + "?v=" + Date.now();
+          script.id = "scriptPreguntas";
+
+          script.onload = () => {
+            mensajeAsignatura.textContent =
+              "Asignatura cargada: " + boton.textContent;
+            mensajeAsignatura.style.display = "block";
+
+            menu.style.display = "block";
+            quiz.style.display = "none";
+          };
+
+          document.body.appendChild(script);
+        });
+      });
+    </script>
+  </body>
+</html>

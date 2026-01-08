@@ -1,0 +1,239 @@
+/* ============================
+   ESTILOS GENERALES
+============================ */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #ffffff, #f0f0f0, #e6e6e6);
+  min-height: 100vh;
+  color: #222;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ============================
+   TÍTULO PRINCIPAL
+============================ */
+
+h1 {
+  text-align: center;
+  font-size: 2.6rem;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #1a73e8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================
+   SELECTOR DE ASIGNATURAS
+============================ */
+
+.selector-asignaturas {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.asignatura {
+  padding: 12px 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  border: 1px solid #d0d0d0;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  transition: 0.2s ease;
+}
+
+.asignatura:hover {
+  background: #e8f1ff;
+  transform: translateY(-2px);
+}
+
+.asignatura.activa {
+  background: #1a73e8;
+  color: white;
+  border-color: #1a73e8;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Mensaje de asignatura cargada */
+.mensaje-asignatura {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a73e8;
+  display: none;
+}
+
+/* ============================
+   MENÚ PRINCIPAL
+============================ */
+
+.menu {
+  display: none;
+  margin-top: 20px;
+}
+
+.card {
+  background: #ffffff;
+  padding: 18px;
+  margin: 12px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 1px solid #dcdcdc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transition: 0.2s ease;
+}
+
+.card:hover {
+  background: #e9f0ff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================
+   QUIZ
+============================ */
+
+.quiz {
+  display: none;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.progress {
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #1a73e8;
+}
+
+.question {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.options button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #cfcfcf;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+}
+
+.options button:hover {
+  background: #eef4ff;
+  transform: translateY(-2px);
+}
+
+.options button.correct {
+  background: #c8f7c5;
+  border-color: #4caf50;
+}
+
+.options button.incorrect {
+  background: #ffd4d4;
+  border-color: #e53935;
+}
+
+/* ============================
+   FEEDBACK
+============================ */
+
+.feedback {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  display: none;
+}
+
+.feedback.correct {
+  background: #d9f7d6;
+  color: #2e7d32;
+}
+
+.feedback.incorrect {
+  background: #ffd6d6;
+  color: #c62828;
+}
+
+/* ============================
+   BOTÓN SIGUIENTE
+============================ */
+
+.next {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: 0.2s ease;
+}
+
+.next:hover {
+  background: #0f5fcc;
+  transform: translateY(-2px);
+}
+
+/* ============================
+   VOLVER
+============================ */
+
+.back {
+  margin-top: 20px;
+  cursor: pointer;
+  color: #1a73e8;
+  font-weight: 600;
+  text-align: center;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .asignatura {
+    width: 100%;
+    text-align: center;
+  }
+
+  .quiz {
+    padding: 15px;
+  }
+}
